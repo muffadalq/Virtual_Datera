@@ -18,6 +18,7 @@ export DATERA_USERNAME="datera_username"
 export DATERA_PASSWORD="datera_password"
 
 Download the Datera vbox image
+Contact support@datera.io to obtain the image
 
 Add the Datera vbox image in your vagrant environment
 vagrant box add vagrant-Datera_vbox.box --name vagrant-Datera_vbox
@@ -29,4 +30,4 @@ Destroying a Datera cluster
 vagrant destroy
 
 Logging into Datera cluster
-vagrant ssh <vmname>
+vagrant ssh "vmname"
