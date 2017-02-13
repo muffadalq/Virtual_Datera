@@ -19,7 +19,8 @@ export DATERA_PASSWORD="<datera_password>"
 
 Download the Datera vbox image
 
-Initialize the Datera vbox image in your vagrant environment
+Add the Datera vbox image in your vagrant environment
+vagrant box add vagrant-Datera_vbox.box --name vagrant-Datera_vbox
 
 Deploying a Datera cluster
 vagrant up
