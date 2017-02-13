@@ -14,8 +14,8 @@ Virtualbox 5.1.6, Vagrant 1.8.6
 Instructions:
 
 Export environment variables:
-export DATERA_USERNAME="<datera_username>"
-export DATERA_PASSWORD="<datera_password>"
+export DATERA_USERNAME="datera_username"
+export DATERA_PASSWORD="datera_password"
 
 Download the Datera vbox image
 
