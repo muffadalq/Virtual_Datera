@@ -8,6 +8,12 @@ ip addr del `ifconfig | grep netB2 -A 1 | grep inet | awk '{print $2}'`/24 dev n
 ip addr del `ifconfig | grep netB1 -A 1 | grep inet | awk '{print $2}'`/24 dev netB1
 SCRIPT
 
+
+if ENV['DATERA_USERNAME'].empty? or ENV['DATERA_PASSWORD'].empty?
+   puts "You must set the environment variables: DATERA_USERNAME and DATERA_PASSWORD"
+   exit 1
+end
+
 Vagrant.configure("2") do |config|
    config.vm.define "vm1" do |vm1|
 	  vm1.vm.box = "vagrant-Datera_vbox"
