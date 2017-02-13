@@ -1,0 +1,92 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+$script = <<SCRIPT
+echo I am provisioning...
+ip addr del `ifconfig | grep netB2 -A 1 | grep inet | awk '{print $2}'`/24 dev netB2
+ip addr del `ifconfig | grep netB1 -A 1 | grep inet | awk '{print $2}'`/24 dev netB1
+SCRIPT
+
+if ENV['DATERA_USERNAME'].empty? or ENV['DATERA_PASSWORD'].empty?
+   puts "You must set the environment variables: DATERA_USERNAME and DATERA_PASSWORD"
+   exit 1
+end
+
+Vagrant.configure("2") do |config|
+    config.vm.define "vm1" do |vm1|	  
+	  vm1.vm.box = "DaterOS-21"
+	  vm1.ssh.username = ENV['DATERA_USERNAME']
+	  vm1.ssh.password = ENV['DATERA_PASSWORD']
+	  vm1.ssh.pty= true
+	  vm1.vm.network :private_network, :ip => '172.16.211.254', :libvirt__forward_mode => "none"
+	  vm1.vm.network :private_network, :ip => '172.17.211.254', :libvirt__forward_mode => "none"
+	  vm1.vm.network :private_network, :ip => "192.168.100.254", :libvirt__forward_mode => "none"
+	  vm1.vm.network :private_network, :ip => "192.168.110.254", :libvirt__forward_mode => "none"
+	  vm1.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
+	  # provision
+	  vm1.vm.provision "shell", path: "create_init_file.py"
+	  # Customize the amount of memory on the VM:
+	  vm1.vm.provider :"libvirt" do |domain|
+	    domain.memory = 4096
+	    domain.cpus = 4
+	    domain.storage :file, :size => '40G', :path => 'datera-single-node-root.raw', :bus => 'sata', :device => 'sda'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data1.raw', :bus => 'sata', :device => 'sdb'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data2.raw', :bus => 'sata', :device => 'sdc'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data3.raw', :bus => 'sata', :device => 'sdd'
+	  end
+    end
+    config.vm.define "vm2" do |vm2|	  
+	  vm2.vm.box = "DaterOS-21"
+	  vm2.ssh.username = ENV['DATERA_USERNAME'] 
+	  vm2.ssh.password = ENV['DATERA_PASSWORD']
+	  vm2.ssh.pty= true
+	  vm2.vm.network :private_network, :ip => '172.16.211.253', :libvirt__forward_mode => "none"
+	  vm2.vm.network :private_network, :ip => '172.17.211.253', :libvirt__forward_mode => "none"
+	  vm2.vm.network :private_network, :ip => "192.168.100.253", :libvirt__forward_mode => "none"
+	  vm2.vm.network :private_network, :ip => "192.168.110.253", :libvirt__forward_mode => "none"
+	  vm2.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
+	  # provision
+	  vm2.vm.provision "shell", 
+            inline: $script
+          vm2.vm.provision "shell", 
+            inline: "echo DateraVM > /var/datera/conf/CLUSTERNAME"
+	  # Customize the amount of memory on the VM:
+	  vm2.vm.provider :"libvirt" do |domain|
+	    domain.memory = 4096
+	    domain.cpus = 4
+	    domain.storage :file, :size => '40G', :path => 'datera-single-node-root2.raw', :bus => 'sata', :device => 'sda'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data1_2.raw', :bus => 'sata', :device => 'sdb'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data2_2.raw', :bus => 'sata', :device => 'sdc'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data3_2.raw', :bus => 'sata', :device => 'sdd'
+          end
+    end
+    config.vm.define "vm3" do |vm3|	  
+	  vm3.vm.box = "DaterOS-21"
+	  vm3.ssh.username = ENV['DATERA_USERNAME'] 
+	  vm3.ssh.password = ENV['DATERA_PASSWORD']
+	  vm3.ssh.pty= true
+	  vm3.vm.network :private_network, :ip => '172.16.211.252', :libvirt__forward_mode => "none"
+	  vm3.vm.network :private_network, :ip => '172.17.211.252', :libvirt__forward_mode => "none"
+	  vm3.vm.network :private_network, :ip => "192.168.100.252", :libvirt__forward_mode => "none"
+	  vm3.vm.network :private_network, :ip => "192.168.110.252", :libvirt__forward_mode => "none"
+	  vm3.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
+	  # provision
+	  vm3.vm.provision "shell", 
+            inline: $script
+          vm3.vm.provision "shell", 
+            inline: "echo DateraVM > /var/datera/conf/CLUSTERNAME"
+	  # Customize the amount of memory on the VM:
+	  vm3.vm.provider :"libvirt" do |domain|
+	    domain.memory = 4096
+	    domain.cpus = 4
+	    domain.storage :file, :size => '40G', :path => 'datera-single-node-root3.raw', :bus => 'sata', :device => 'sda'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data1_3.raw', :bus => 'sata', :device => 'sdb'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data2_3.raw', :bus => 'sata', :device => 'sdc'
+	    domain.storage :file, :size => '20G', :path => 'datera-single-node-data3_3.raw', :bus => 'sata', :device => 'sdd'
+          end
+    end
+end
