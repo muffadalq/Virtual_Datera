@@ -17,6 +17,7 @@ INIT_TEMPLATE = '''
 	"debug" : 1,
         "cabalSize" : 3,
 	"name" : "DateraVM",
+        "statsSize" : "104857600",
         "ntp":
         [
             "0.pool.ntp.org", "1.pool.ntp.org"
@@ -111,7 +112,7 @@ INIT_TEMPLATE = '''
                                 "network": 24,
                                 "range": 50,
 				"vlan" : 0,
-                                "server": ""
+                                "server": "172.16.211.170"
                         },
                         "ident": 
                         [
@@ -127,7 +128,7 @@ INIT_TEMPLATE = '''
                                 "network": 24,
                                 "range": 50,
 				"vlan" : 0,
-                                "server": ""
+                                "server": "172.17.211.170"
                         },
                         "ident":
                         [
