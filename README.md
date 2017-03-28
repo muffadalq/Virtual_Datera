@@ -11,7 +11,7 @@ VirtualBox, Vagrant
 Tested Versions:<br />
 Virtualbox 5.1.6, Vagrant 1.8.6<br />
 
-<b />Instructions:<b />
+<b />Instructions:
 
 Export environment variables:<br />
 export DATERA_USERNAME="datera_username"<br />
