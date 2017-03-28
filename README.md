@@ -21,7 +21,7 @@ Download the Datera vbox image
 Contact support@datera.io to obtain the image
 
 Add the Datera vbox image in your vagrant environment
-vagrant box add vagrant-Datera_vbox.box --name vagrant-Datera_vbox
+vagrant box add vagrant-Datera_vbox.box --name DaterOS-vagrant
 
 Deploying a Datera cluster
 vagrant up
