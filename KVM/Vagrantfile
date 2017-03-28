@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
 	  # provision
           vm1.vm.provision "shell", 
             inline: $nvm
-	  vm1.vm.provision "shell", path: "create_init_file.py"
+	  vm1.vm.provision "shell", path: "../create_init_file.py"
 	  # Customize the amount of memory on the VM:
 	  vm1.vm.provider :"libvirt" do |domain|
             domain.management_network_mode = "nat"
