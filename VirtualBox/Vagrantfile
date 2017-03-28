@@ -1,22 +1,48 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 #
-# needed to work around a product bug
-$script = <<SCRIPT
-echo I am provisioning...
+# network script
+$network = <<SCRIPT
+echo removing IPs from netB* interfaces
 ip addr del `ifconfig | grep netB2 -A 1 | grep inet | awk '{print $2}'`/24 dev netB2
 ip addr del `ifconfig | grep netB1 -A 1 | grep inet | awk '{print $2}'`/24 dev netB1
 SCRIPT
 
+# nvm script
+$nvm = <<SCRIPT
+echo emulating 8G file as nvm device
+mkdir -p /var/datera/nvmdevs /var/datera/target/nvmdevs
+fallocate -l 4G /var/datera/nvmdevs/nvm1
+ln -s /var/datera/nvmdevs/nvm1 /var/datera/nvmdevs/Datera_Nvdevice
+SCRIPT
 
-if ENV['DATERA_USERNAME'].empty? or ENV['DATERA_PASSWORD'].empty?
+# is cluster running
+$clusterrunning = <<SCRIPT
+for i in {0..40}
+do
+   if [ "`dcp -l | grep Cluster: | awk '{print $2}'`" == "CL_RUNNING" ];
+   then
+      echo "cluster state is " `dcp -l | grep Cluster: | awk '{print $2}'`
+      exit 0
+   fi
+   if [ i == 40 ];
+   then
+      echo "cluster state is " `dcp -l | grep Cluster: | awk '{print $2}'`
+      echo "Could not form cluster in 3 minutes"
+      exit 1
+   fi
+   sleep 5
+done
+SCRIPT
+
+if ENV['DATERA_USERNAME'].nil? or ENV['DATERA_PASSWORD'].nil?
    puts "You must set the environment variables: DATERA_USERNAME and DATERA_PASSWORD"
    exit 1
 end
 
 Vagrant.configure("2") do |config|
    config.vm.define "vm1" do |vm1|
-	  vm1.vm.box = "vagrant-Datera_vbox"
+	  vm1.vm.box = "DaterOS-vagrant"
 	  vm1.ssh.username = ENV['DATERA_USERNAME']
 	  vm1.ssh.password = ENV['DATERA_PASSWORD']
 	  vm1.ssh.pty = true
@@ -27,22 +53,24 @@ Vagrant.configure("2") do |config|
 	  vm1.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
 
 	  # provisioner
-	  vm1.vm.provision "shell", path: "create_init_file.py"
+	  vm1.vm.provision "shell",
+	     inline: $nvm
+	  vm1.vm.provision "shell", path: "../create_init_file.py"
 	  # create vm profile
 	  vm1.vm.provider "virtualbox" do |domain|
 	     domain.cpus = 2
-	     domain.memory = 2048
-	     domain.customize ['createmedium', '--filename', './data1.vdi', '--size', 10 * 1024]
+	     domain.memory = 4096
+	     domain.customize ['createmedium', '--filename', './data1.vdi', '--size', 5 * 1024]
 	     domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', './data1.vdi']
-	     #domain.customize ['createmedium', '--filename', './data2.vdi', '--size', 10 * 1024]
-	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2.vdi']
-	     #domain.customize ['createmedium', '--filename', './data3.vdi', '--size', 10 * 1024]
+	     domain.customize ['createmedium', '--filename', './data2.vdi', '--size', 20 * 1024]
+	     domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2.vdi']
+	     #domain.customize ['createmedium', '--filename', './data3.vdi', '--size', 20 * 1024]
 	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', './data3.vdi']
              domain.gui = true
 	   end
    end
    config.vm.define "vm2" do |vm2|
-	  vm2.vm.box = "vagrant-Datera_vbox"
+	  vm2.vm.box = "DaterOS-vagrant"
 	  vm2.ssh.username = ENV['DATERA_USERNAME']
 	  vm2.ssh.password = ENV['DATERA_PASSWORD']
 	  vm2.ssh.pty = true
@@ -53,25 +81,27 @@ Vagrant.configure("2") do |config|
 	  vm2.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
 
 	  # provisioner
+          vm2.vm.provision "shell",
+            inline: $network
+          vm2.vm.provision "shell",
+            inline: $nvm
 	  vm2.vm.provision "shell",
             inline: "echo DateraVM > /var/datera/conf/CLUSTERNAME"
-          vm2.vm.provision "shell",
-            inline: $script
 	  # create vm profile
 	  vm2.vm.provider "virtualbox" do |domain|
 	     domain.cpus = 2
-	     domain.memory = 2048
-	     domain.customize ['createmedium', '--filename', './data1_2.vdi', '--size', 10 * 1024]
+	     domain.memory = 4096
+	     domain.customize ['createmedium', '--filename', './data1_2.vdi', '--size', 5 * 1024]
 	     domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', './data1_2.vdi']
-	     #domain.customize ['createmedium', '--filename', './data2_2.vdi', '--size', 10 * 1024]
-	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2_2.vdi']
+	     domain.customize ['createmedium', '--filename', './data2_2.vdi', '--size', 20 * 1024]
+             domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2_2.vdi']
 	     #domain.customize ['createmedium', '--filename', './data3_2.vdi', '--size', 10 * 1024]
 	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', './data3_2.vdi']
              domain.gui = true
 	   end
    end
    config.vm.define "vm3" do |vm3|
-	  vm3.vm.box = "vagrant-Datera_vbox"
+	  vm3.vm.box = "DaterOS-vagrant"
 	  vm3.ssh.username = ENV['DATERA_USERNAME']
 	  vm3.ssh.password = ENV['DATERA_PASSWORD']
 	  vm3.ssh.pty = true
@@ -82,18 +112,22 @@ Vagrant.configure("2") do |config|
 	  vm3.vm.synced_folder ".", "/vagrant_data", disabled: true, owner: "root", group: "root"
 
 	  # provisioner
+          vm2.vm.provision "shell",
+            inline: $network
+          vm2.vm.provision "shell",
+            inline: $nvm
 	  vm3.vm.provision "shell",
             inline: "echo DateraVM > /var/datera/conf/CLUSTERNAME"
           vm3.vm.provision "shell",
-            inline: $script
+            inline: $clusterrunning
 	  # create vm profile
 	  vm3.vm.provider "virtualbox" do |domain|
 	     domain.cpus = 2
-	     domain.memory = 2048
-	     domain.customize ['createmedium', '--filename', './data1_3.vdi', '--size', 10 * 1024]
+	     domain.memory = 4096
+	     domain.customize ['createmedium', '--filename', './data1_3.vdi', '--size', 5 * 1024]
 	     domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', './data1_3.vdi']
-	     #domain.customize ['createmedium', '--filename', './data2_3.vdi', '--size', 10 * 1024]
-	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2_3.vdi']
+	     domain.customize ['createmedium', '--filename', './data2_3.vdi', '--size', 20 * 1024]
+	     domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', './data2_3.vdi']
 	     #domain.customize ['createmedium', '--filename', './data3_3.vdi', '--size', 10 * 1024]
 	     #domain.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', './data3_3.vdi']
              domain.gui = true
