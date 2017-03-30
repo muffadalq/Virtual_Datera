@@ -12,7 +12,7 @@ export DATERA_PASSWORD="datera_password"
 <b>Download the Datera vbox image:</b><br />
 Contact support@datera.io to obtain the image
 
-<br />| Platform | Prerequisites | Setup Instructions |
+| Platform | Prerequisites | Setup Instructions |
 --- | --- | ---
 | KVM | vagrant-libvirt: https://github.com/vagrant-libvirt/vagrant-libvirt | vagrant box add vagrant-Datera_vbox.box --name DateraOS-vagrant |
 VirtualBox| N/A |vagrant box add DaterOS-vagrant.box --name DaterOS-vagrant |
