@@ -10,8 +10,7 @@ export DATERA_USERNAME="datera_username"<br />
 export DATERA_PASSWORD="datera_password"
 
 <b>Download the Datera vbox image:</b><br />
-Contact support@datera.io to obtain the image
-
+Contact support@datera.io to obtain the image<br />
 
 | Platform | Prerequisites | Setup Instructions |
 --- | --- | ---
