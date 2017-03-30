@@ -1,9 +1,6 @@
 # Virtual_Datera
 
-This project contains the files needed to deploy a 3-node datera cluster in a hypervisor environment. It includes:<br />
-
-1) vagrantfile for the hypervisor environment<br />
-2) The create_init_file.py script that gets called as a provisioner once the VM is deployed<br />
+Deploys a datera cluster in a hypervisor environment using vagrant. 
 
 <b>Prerequisites:</b><br />
 Vagrant: https://www.vagrantup.com/downloads.html
