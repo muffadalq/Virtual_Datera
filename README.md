@@ -12,16 +12,17 @@ export DATERA_PASSWORD="datera_password"
 <b>Download the Datera vbox image:</b><br />
 Contact support@datera.io to obtain the image
 
+
 | Platform | Prerequisites | Setup Instructions |
 --- | --- | ---
 | KVM | vagrant-libvirt: https://github.com/vagrant-libvirt/vagrant-libvirt | vagrant box add vagrant-Datera_vbox.box --name DateraOS-vagrant |
 VirtualBox| N/A |vagrant box add DaterOS-vagrant.box --name DaterOS-vagrant |
 
-<b>Deploying a Datera cluster:</b><br />
+<b>Deploying cluster:</b><br />
 vagrant up
 
-<b>Destroying a Datera cluster:</b><br />
+<b>Destroy cluster:</b><br />
 vagrant destroy
 
-<b>Logging into Datera cluster:</b><br />
+<b>Logg into cluster:</b><br />
 vagrant ssh "vmname"
