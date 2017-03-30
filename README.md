@@ -6,6 +6,9 @@ Deploys a datera cluster in a hypervisor environment using vagrant.
 Vagrant: https://www.vagrantup.com/downloads.html<br />
 VM requirements: 2 vCPU and 4GB ram per datera node
 
+<b>Cloning Repo:</b><br />
+git clone <reponame>
+
 <b>Export environment variables:</b><br />
 export DATERA_USERNAME="datera_username"<br />
 export DATERA_PASSWORD="datera_password"
@@ -13,7 +16,7 @@ export DATERA_PASSWORD="datera_password"
 <b>Download the Datera vbox image:</b><br />
 Contact support@datera.io to obtain the image
 
-| Hypervisor | Vagrant Plugin Needed | Setup Instructions 
+| Hypervisor | Vagrant Plugin Needed | Add datera image to vagrant |
 --- | --- | ---
 | KVM | vagrant-libvirt: https://github.com/vagrant-libvirt/vagrant-libvirt | vagrant box add vagrant-Datera_vbox.box --name DateraOS-vagrant |
 VirtualBox| None |vagrant box add DaterOS-vagrant.box --name DaterOS-vagrant |
