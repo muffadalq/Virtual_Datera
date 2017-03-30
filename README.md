@@ -15,7 +15,7 @@ Contact support@datera.io to obtain the image
 
 | Hypervisor | Vagrant Plugin Needed | Setup Instructions 
 --- | --- | ---
-| KVM | vagrant-libvirt: https://github.com/vagrant-libvirt/vagrant-libvirt| vagrant box add vagrant-Datera_vbox.box --name DateraOS-vagrant |
+| KVM | vagrant-libvirt: https://github.com/vagrant-libvirt/vagrant-libvirt | vagrant box add vagrant-Datera_vbox.box --name DateraOS-vagrant |
 VirtualBox| None |vagrant box add DaterOS-vagrant.box --name DaterOS-vagrant |
 
 <b>Deploying cluster:</b><br />
