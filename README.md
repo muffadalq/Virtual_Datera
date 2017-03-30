@@ -3,7 +3,7 @@
 Deploys a datera cluster in a hypervisor environment using vagrant. 
 
 <b>Prerequisites:</b><br />
-Vagrant: https://www.vagrantup.com/downloads.html<br /
+Vagrant: https://www.vagrantup.com/downloads.html<br />
 VM requirements: 2 vCPU and 4GB ram per datera node
 
 <b>Export environment variables:</b><br />
