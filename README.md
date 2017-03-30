@@ -7,7 +7,7 @@ Vagrant: https://www.vagrantup.com/downloads.html<br />
 VM requirements: 2 vCPU and 4GB ram per datera node
 
 <b>Cloning Repo:</b><br />
-git clone <reponame>
+git clone https://github.com/mufaddalq/Virtual_Datera.git
 
 <b>Export environment variables:</b><br />
 export DATERA_USERNAME="datera_username"<br />
